@@ -1,0 +1,38 @@
+
+<html>
+<head>
+<script type="text/javascript">
+var imgObj;
+
+function start(){
+   imgObj = document.getElementById('myImage');
+   imgObj.style.position= 'relative'; 
+   imgObj.style.left = '20px'; 
+ // imgObj.style.right = '10px'; 
+}
+
+function moveRight(){
+   if(parseInt(imgObj.style.left)<=1000)
+   imgObj.style.left = parseInt(imgObj.style.left) + 10 + 'px';
+   else
+    setInterval('moveLeft()',100);
+  }
+
+function moveLeft(){
+ if(parseInt(imgObj.style.left)>0)
+ imgObj.style.left = parseInt(imgObj.style.left) - 10 + 'px';
+else
+{  start();
+  moveRight();
+ }
+}
+
+window.onload = start; 
+</script>
+</head>
+<body>
+<img id="myImage" src="sign.jpg" />
+<br/>
+<input type="button" value="Start" onclick="setInterval('moveRight()',100);" />
+</body>
+</html>

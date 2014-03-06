@@ -1,0 +1,22 @@
+
+<html>
+<head>
+<script>
+function timedText()
+{
+	var x=document.getElementById("txt");
+	var t1=setTimeout(function(){x.value="Hello";x.style.color="#ff0000"},1000);
+	var t2=setTimeout(function(){x.value="I'm";x.style.color="#aeaeae"},1500);
+	var t3=setTimeout(function(){x.value="Gulshan!";x.style.color="#0000ff"},2000);
+}
+
+</script>
+</head>
+
+<body>
+<form>
+<input type="button" value="Display timed text!" onclick="timedText()" />
+<input type="text" id="txt" />
+</form>
+</body>
+</html>

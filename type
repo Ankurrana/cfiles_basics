@@ -1,0 +1,24 @@
+type
+	arr = array[0..110] of Longint
+var 
+	n,testcases,i,count,key,n1,k:Longint,a:arr;
+begin
+	read(testcases);
+	while testcases>0 do
+		begin			
+			dec(testcases);
+			count:=0;
+			read(n);
+			n1:=n-1;
+			for i:=0 to n1 do
+				read(a[i]);
+			read(k);
+			k := k-1;
+			key:= a[k];
+			for i:=0 to n1 do
+				if(a[i]<a[k]) then count:=count+1;	
+			writeln(count);
+		end;
+end.
+
+

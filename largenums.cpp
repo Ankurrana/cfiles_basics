@@ -1,0 +1,353 @@
+// A C ++  Class to multiply and do stuff with large numbers in C.
+
+#include "iostream"
+#include "string"
+#include "stdlib.h"
+#include "vector"
+
+using namespace std;
+
+
+class large_num {
+	public:
+	string original_number;
+	vector<short int>array_number;
+	int num_size;
+		large_num(){};
+			
+		large_num(string s_num){
+			int i;
+			original_number = s_num;
+			num_size = original_number.size();
+			
+			for(i=0;i<num_size;i++){
+				array_number.push_back(original_number[i] - '0');
+			}
+			i = 0; 
+			while(array_number[i]==0)
+				array_number.erase(array_number.begin());
+		};
+
+		void shownumber(){
+			int i;
+			for(i=0;i<array_number.size();i++)
+				cout << array_number[i];
+		}
+
+		static vector<short int> multiply(large_num a,large_num b){
+		
+			 vector<short int> v1 = a.array_number; 
+			 vector<short int> v2 = b.array_number;
+			 vector<short int> ans(v1.size() + v2.size(),0);
+			 vector<short int> temp(v1.size()>v2.size()?v1.size():v2.size(),0) ;
+			 long int j;
+			 long int sizev2 = v2.size();
+			 for(j=0;j<sizev2;j++){
+				temp = single_multiply(v1,v2[sizev2-j-1]);
+				ans = add(ans,temp,j);
+			 };
+			 	if(ans[0] == 0)
+			 		ans.erase(ans.begin());
+			 return ans;
+		};
+
+
+		large_num operator* (large_num a){
+			return convert_vector_to_largenum(multiply(*this,a));
+		};
+
+		//protected:
+		public:
+			    static vector<short int> single_multiply(vector<short int> num1,short int key){
+				int size = num1.size();
+				int i;
+				vector<short int>mult_ans(size+1,0);
+				
+				short int carry = 0 ;
+				short int temp = 0;				
+
+
+				
+				for(i=0;i<size;i++){
+					temp = ((num1[size - i - 1] * key)+carry);
+					mult_ans[size - i] = temp%10;
+					carry = temp/10;
+
+				};
+					if(carry != 0)
+						mult_ans[0] = carry;
+					else
+						mult_ans.erase(mult_ans.begin());
+
+				return mult_ans;
+			};
+
+
+
+
+
+
+		static vector<short int> add(vector<short int> a,vector<short int> b,int offset){
+			int i;
+			for(i=0;i<offset;i++)	
+				b.push_back(0);
+
+            int sizeofa = a.size();
+            int sizeofb = b.size();
+            int sizeofvector = sizeofb>sizeofa?sizeofb:sizeofa;
+            int j,carry = 0;
+            short int temp = 0;
+            vector<short int> add_ans(sizeofvector + 1,0);
+
+            int x,y,z;
+
+            x = sizeofvector;
+            y = sizeofa - 1;
+            z = sizeofb - 1;
+
+
+            short int p,q,r;
+           
+            while(x){
+            	if(y>=0)
+            		p = a[y--];
+            	else
+            		p = 0;
+            	if(z>=0)
+            		q = b[z--];
+            	else
+            		q = 0; 
+            	temp = p+q+carry;
+            	add_ans.at(x--)= temp%10;
+            	carry = temp/10;
+            };
+              	if(carry != 0)
+					add_ans[0] = carry;
+				else
+					add_ans.erase(add_ans.begin());
+
+          
+			return add_ans; 
+
+		};
+
+
+		string operator+ (large_num a){
+			vector<short int> v1 = array_number;
+			vector<short int> v2 = a.array_number;
+
+			v1 = add(v1,v2,0);
+            return convert_vector_to_string(v1);
+
+		};
+
+		void operator=(const large_num &s_num )
+      	{ 
+         	original_number = s_num.original_number;
+         	array_number = s_num.array_number;
+         	num_size = s_num.num_size;
+      	}
+
+
+      	void operator=(const string &s_num){
+      		int i;
+			original_number = s_num;
+			num_size = original_number.size();
+			
+			for(i=0;i<num_size;i++){
+				array_number.push_back(original_number[i] - '0');
+			}
+			i = 0; 
+			while(array_number[i]==0)
+				array_number.erase(array_number.begin());
+      	}
+
+		
+
+		string convert_vector_to_string(vector<short int> a){
+			int i;
+			string s;
+			for(i=0;i<a.size();i++){
+				s.push_back(char(a[i] + '0'));	
+			};
+
+			return s;
+		};
+
+		large_num convert_vector_to_largenum(vector<short int> a){
+			int i;
+			string s;
+			for(i=0;i<a.size();i++){
+				s.push_back(char(a[i] + '0'));	
+			};
+
+			return large_num(s);
+		}
+		
+
+		vector<short int> convert_string_to_vector(string a){
+			large_num b(a);
+			return b.array_number;
+		}
+
+		bool operator > (large_num a){
+			if(array_number.size() > a.array_number.size())
+				return true;
+			else if(array_number.size() < a.array_number.size())
+				return false;
+			else {
+				//This means that their size are same
+
+				for(int i=0;i<array_number.size();i++){
+					if(array_number[i] > a.array_number[i]){
+						return true;
+					}
+					else if(array_number[i] == a.array_number[i]){
+						if(i!=array_number.size()-1)
+							continue;
+						else
+							return true;
+					}
+					else
+						return false;
+				};
+
+
+
+			}
+		};
+
+		bool operator < (large_num a){
+			if(array_number.size() > a.array_number.size())
+				return false;
+			else if(array_number.size() < a.array_number.size())
+				return true;
+			else {
+				//This means that their size are same
+
+				for(int i=0;i<array_number.size();i++){
+					if(array_number[i] > a.array_number[i]){
+						return false;
+					}
+					else if(array_number[i] == a.array_number[i]){
+						if(i!=array_number.size()-1)
+							continue;
+						else
+							return true;
+					}
+					else
+						return true;
+				};
+
+
+
+			}
+		};
+
+		bool operator == (large_num a){
+			if(array_number.size() != a.array_number.size())
+				return false;
+			else {
+				for(int i=0;i<array_number.size();i++){
+					if(array_number[i] != a.array_number[i])
+						return false;
+					else{
+						if(i!=a.array_number.size()-1)
+							continue;
+						else
+							return true;
+
+					}
+				}	
+			}
+		}
+
+		
+		void operator++(){
+			int i,carry=1, temp=0;
+			int size = array_number.size();
+			
+			for(i=0;i<size;i++){
+				temp = array_number[size - 1 - i] + carry;
+				array_number[size - 1 - i] = temp%10;
+				carry = temp/10;
+				if(carry == 0)
+					break;
+			}
+
+			if(carry && i==size){
+				array_number.insert(array_number.begin(),1);
+			}
+
+
+		}
+
+		void operator++(int){
+			int i,carry=1, temp=0;
+			int size = array_number.size();
+			
+			for(i=0;i<size;i++){
+				temp = array_number[size - 1 - i] + carry;
+				array_number[size - 1 - i] = temp%10;
+				carry = temp/10;
+				if(carry == 0)
+					break;
+			}
+
+			if(carry && i==size){
+				array_number.insert(array_number.begin(),1);
+			}
+
+		};
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+	Operator overloading for various operators like =,==,+,>,< etc
+*/
+
+int main(){
+	int i,t;
+	string tempstring,tempstring2;
+	
+	
+	
+	
+	large_num x = tempstring;
+	large_num y(tempstring2);		
+	
+
+	large_num a("1"); 
+	large_num factans("1");
+ 
+	while(a<x){
+		factans = factans*a;
+		a++;
+	}
+
+
+
+
+
+	factans.shownumber();
+
+	
+	return 0;
+}
+
+
+
+/*	
+	
+*/

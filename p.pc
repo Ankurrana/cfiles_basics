@@ -1,0 +1,23 @@
+Var tc,n,i,ans:longint;
+    d,u,bestcost,cost,m,r,c:real;
+  begin
+    read(tc);
+    while tc>0 do
+      begin
+        dec(tc);
+        read(d,u,n);
+        bestcost:=d*u;
+        ans:=0;
+        for i:=1 to n do
+          begin
+            read(m,r,c);
+            cost:=(m*u*r+c)/m;
+            if cost<bestcost then
+              begin
+                bestcost:=cost;
+                ans:=i;
+              end;
+          end;
+        Writeln(ans);
+      end;
+  end. 
